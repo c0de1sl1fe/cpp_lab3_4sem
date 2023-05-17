@@ -21,6 +21,25 @@ struct Edge
     }
 
 };
+
+template<>
+struct Edge<std::string, double>
+{
+    std::string id1;
+    std::string id2;
+    double dist;
+    Edge(std::string id1_ = " ", std::string id2_ = " ", double distance_ = 0) : id1(id1_), id2(id2_), dist(distance_) {}
+    bool operator ==(Edge& src)
+    {
+        return (id1 == src.id1 && id2 == src.id2 && dist == src.dist);
+    }
+    friend std::ostream& operator<<(std::ostream& os, Edge<std::string, double>& obj)
+    {
+        os << "(" << obj.id1 << ", " << obj.id2 << ")_" << obj.dist << " ";
+        return os;
+    }
+
+};
 template<typename vertexType, typename dist_type = double>
 class MyGraph {
 private:
@@ -58,7 +77,15 @@ public:
         return true;
 
     }
-    //std::vector<vertexType> vertices() const;
+    std::vector<vertexType> vertices() const
+    {
+        std::vector<vertexType> vertextArray;
+        for (auto i = graph.begin(); i != graph.end(); i++)
+        {
+            vertextArray.push_back(i->first);
+        }
+        return vertextArray;
+    }
     ////проверка-добавление-удаление ребер
     void add_edge(const vertexType& from, const vertexType& to, const dist_type& d)
     {
@@ -69,8 +96,23 @@ public:
         }
       
     }
-    //bool remove_edge(const vertexType& from, const vertexType& to);
-    //bool remove_edge(const Edge& e); //c учетом расстояния
+    bool remove_edge(const vertexType& from, const vertexType& to)
+    {
+        if (has_edge(from, to))
+        {
+            graph[from].erase(to);
+            return true;
+        }
+        return false;
+    }
+    bool remove_edge(const Edge<vertexType, dist_type>& e) //c учетом расстояния
+    {
+        if (has_edge(e))
+        {
+            graph[e.id1].erase(e.id2);
+        }
+        return false;
+    }
     bool has_edge(const vertexType& from, const vertexType& to)
     {
         if (has_vertex(from) && has_vertex(to))
@@ -97,7 +139,20 @@ public:
         return false;
     }
     ////получение всех ребер, выходящих из вершины
-    //std::vector<Edge> edges(const vertexType& vertex);
+    std::vector<Edge<vertexType, dist_type>> edges(const vertexType& vertex)
+    {
+        
+        std::vector<Edge<vertexType, dist_type>> edgesArray;
+        if (has_vertex(vertex))
+        {
+            for (auto i = graph[vertex].begin(); i != graph[vertex].end(); i++)
+            {
+                edgesArray.push_back(i->second);
+            }
+            return edgesArray;
+        }
+        return edgesArray;
+    }
     //size_t order() const; //порядок
     //size_t degree() const; //степень
     ////поиск кратчайшего пути
@@ -116,7 +171,6 @@ public:
             }
             os << "\n";
         }
-        //os << "(" << obj.id1 << ", " << obj.id2 << ")_" << obj.dist << " ";
         return os;
     }
 };

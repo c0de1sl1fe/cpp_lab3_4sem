@@ -33,13 +33,16 @@ int main()
     a.add_vertex(1);
     a.add_vertex(2);
     a.add_edge(1, 2, 5);
-    a.remove_vertex(2);
-    std::cout << a;
+
+    //std::cout << a;
     std::cout << a.has_edge(1, 2);
+    std::cout << std::endl;
+    for (auto i : a.edges(1))
+    {
+        std::cout << i;
+    }
 
-
-
-    std::map<int, std::map<double, bool>> test;
+    //std::map<int, std::map<double, bool>> test;
     //test[1][1.1] = 0;
     //test[1][2.2] = 1;
     //test[2][23.12] = 0;
