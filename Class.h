@@ -75,7 +75,8 @@ private:
             visited[tmp] = true;
         }
     }
-    vertexType getVertexWithMinDist(std::map<vertexType, bool> unproceesedVertes, std::map<vertexType, dist_type> distToNode)
+
+    vertexType getVertexWithMinDist(std::map<vertexType, bool>& unproceesedVertes, std::map<vertexType, dist_type>& distToNode)
     {
         vertexType vertexWithMinDist; // will be error with string
         dist_type minDist= std::numeric_limits<dist_type>::max();
@@ -90,7 +91,7 @@ private:
         }
         return vertexWithMinDist;
     }
-    void calculateDistToEachVertex(std::map<vertexType, bool> unproceesedVertes, std::map<vertexType, dist_type> distToNode)
+    void calculateDistToEachVertex(std::map<vertexType, bool>& unproceesedVertes, std::map<vertexType, dist_type>& distToNode)
     {
         while (!unproceesedVertes.empty())
         {
@@ -102,14 +103,43 @@ private:
                 vertexType adjacentVertex = it->first;
                 if (unproceesedVertes.count(adjacentVertex) != 0)
                 {
-                    dist_type dist = distToNode[vertex] + it->second.dist;
+                    dist_type distToCheck = distToNode[vertex] + it->second.dist;
+                    if (distToCheck < distToNode[adjacentVertex])
+                    {
+                        distToNode[adjacentVertex] = distToCheck;
+                    }
+                }
+            }
+            unproceesedVertes.erase(vertex);
+        }
+    }
+    std::vector<Edge<vertexType, dist_type>> getShortestPath_(const vertexType& from, const vertexType& to, std::map<vertexType, dist_type>& distToNode)
+    {
+        std::vector<Edge<vertexType, dist_type>> path;
+        vertexType vertex = to;
+        while (vertex != from)
+        {
+            dist_type minDistToVertex = distToNode[vertex];
+            /*path.push_back(vertex);*/
+            for (auto i : collectPartents(vertex))
+            {
+                vertexType parent = i;
+                Edge<vertexType, dist_type> parentEdge = graph[i][vertex];
+                if (distToNode.count(parent) == 0)
+                    continue;
+                if (parentEdge.dist + distToNode[parent] == minDistToVertex)
+                {
+                    path.push_back(graph[parent][vertex]);
+                    distToNode.erase(vertex);
+                    vertex = parent;
+                    break;
                 }
             }
         }
-    }
-    std::vector<Edge<vertexType, dist_type>> shortest_path_(const vertexType& from, const vertexType& to)
-    {
-
+        
+        //path.push_back(graph[vertex][path[path.size()].id1]);
+        std::reverse(path.begin(), path.end());
+        return path;
     }
 public:
     //проверка-добавление-удаление вершин
@@ -250,22 +280,27 @@ public:
 
 
     ////поиск кратчайшего пути
-    std::vector<Edge<vertexType, dist_type>> shortest_path(const vertexType& from, const vertexType& to) const
+    std::vector<Edge<vertexType, dist_type>> shortest_path(const vertexType& from, const vertexType& to)
     {
         std::map<vertexType, dist_type> distToNode;
-        std::map<vertexType, vertexType> prev;
         std::map<vertexType, bool> unproceesedVertes;
-        std::vector<Edge> shortestPath;
+        std::vector<Edge<vertexType, dist_type>> shortestPath;
         for (auto i = graph.begin(); i != graph.end(); i++)
         {
             distToNode[i->first] = std::numeric_limits<dist_type>::max();
             unproceesedVertes[i->first] = true;
         }
         distToNode[from] = 0;
+        
         calculateDistToEachVertex(unproceesedVertes, distToNode);
+        std::vector<Edge<vertexType, dist_type>> test;
+        std::vector<vertexType>test1;
         if (distToNode[to] == std::numeric_limits<dist_type>::max())
-            return NULL;
-        return getShortestPath_(from, to, distToNode);
+            return test;
+        test = getShortestPath_(from, to, distToNode);
+
+        test1 = vertices();
+        return test;
     }
     ////обход BFS
     void walk(const vertexType& start_vertex/*, std::function<void(const vertexType&)> action*/)
@@ -303,5 +338,17 @@ public:
             os << "\n";
         }
         return os;
+    }
+    std::vector<vertexType> collectPartents(vertexType vertex)
+    {
+        std::vector<vertexType> parents;
+        for (auto it = graph.begin(); it != graph.end(); it++)
+        {
+            if (it->second.count(vertex) != 0)//it->second.find(v) != it->second.end()
+            {
+                parents.push_back(it->first);
+            }
+        }
+        return parents;
     }
 };

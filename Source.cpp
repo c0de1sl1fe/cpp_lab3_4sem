@@ -34,17 +34,34 @@ int main()
     //std::cout << (test.find(1)==test.end());
 
 
-    MyGraph<int> a;
-    a.add_vertex(1);
-    a.add_vertex(2);
-    a.add_vertex(3);
-    a.add_vertex(4);
-    a.add_edge(1, 3, 5);
-    a.add_edge(2, 4, 5);
-    a.add_edge(1, 2, 5);
+    //MyGraph<int> a;
+    //a.add_vertex(1);
+    //a.add_vertex(2);
+    //a.add_vertex(3);
+    //a.add_vertex(4);
+    //a.add_edge(1, 2, 1);
+    //a.add_edge(1, 3, 2);
+    //a.add_edge(2, 4, 6);
+    //a.add_edge(3, 4, 4);
+    MyGraph<std::string> a;
+    a.add_vertex("a");
+    a.add_vertex("b");
+    a.add_vertex("c");
+    a.add_vertex("d");
+    a.add_edge("a", "b", 1);
+    a.add_edge("a", "c",  2);
+    a.add_edge("b", "d", 6);
+    a.add_edge("c", "d", 4);
     std::cout << a;
-    a.edges(1);
-    
+    for (auto i : a.shortest_path("a", "d"))
+    {
+        std::cout << i;
+    }
+    //for (auto  i: a.collectPartents(3))
+    //{
+    //    std::cout << i;
+    //}
+    //
     
 
     //std::cout << a;
@@ -59,7 +76,8 @@ int main()
     //a.init();
     // 
     //std::vector<int> tmp11 = { 3, 2, 1 };
-    //std::qsort(tmp11.data(), tmp11.size(),sizeof(int),  compare);
+    ////std::qsort(tmp11.data(), tmp11.size(),sizeof(int),  compare);
+    //std::reverse(tmp11.begin(), tmp11.end());
     //for (auto i : tmp11)
     //{
     //    std::cout << i;
@@ -116,6 +134,9 @@ int main()
     //test.pop();
     //std::cout << test.front()   ;
     //while (test.empty())
+
+
+
 
     return 1;
 }
