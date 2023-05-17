@@ -10,6 +10,11 @@ int compare(const void* a, const void* b)
 {
     return (*(int*)a - *(int*)b);
 }
+template<typename vertexType, typename Distance = double>
+void Print(const vertexType& val)
+{
+    std::cout << val << ' ';
+}
 template<typename vertexType, typename dist_type = double>
 struct Edge
 {
@@ -53,36 +58,39 @@ private:
 
     std::map<vertexType, std::map<vertexType, Edge<vertexType, dist_type>>> graph;
     std::map<vertexType, bool> visited;
-
-    void walk_(const vertexType& start_vertex/*, std::function<void(const vertexType&)> action*/)
+    void walk_(const vertexType& start_vertex, std::function<void(const vertexType&)> action)
     {
-        std::cout << "ok";
-        visited[start_vertex] = true;
+        std::cout << "ok ";
+        //visited[start_vertex] = true;
         std::queue<vertexType> queue;
         queue.push(start_vertex);
         vertexType tmp = queue.front();
         while (!queue.empty())
         {
             queue.pop();
-            std::cout << tmp;
-            //action(tmp);
-            for (auto it = graph[tmp].begin(); it != graph[tmp].end(); it++)
+            if (!visited[tmp])
             {
-                if(!visited[it->first])
-                    queue.push(it->first);
+                action(tmp);
+                visited[tmp] = true;
+                for (auto it = graph[tmp].begin(); it != graph[tmp].end(); it++)
+                {
+                    if (!visited[it->first])
+
+                        queue.push(it->first);
+                }
+                tmp = queue.front();
             }
-            tmp = queue.front();
-            visited[tmp] = true;
         }
     }
 
     vertexType getVertexWithMinDist(std::map<vertexType, bool>& unproceesedVertes, std::map<vertexType, dist_type>& distToNode)
     {
-        vertexType vertexWithMinDist; // will be error with string
+        vertexType vertexWithMinDist;
         dist_type minDist= std::numeric_limits<dist_type>::max();
         for (auto it = unproceesedVertes.begin(); it != unproceesedVertes.end(); it++)
         {
-            dist_type dist = it->second;
+            //dist_type dist = it->second;
+            dist_type dist = distToNode[it->first];
             if (dist < minDist)
             {
                 minDist = dist;
@@ -120,7 +128,6 @@ private:
         while (vertex != from)
         {
             dist_type minDistToVertex = distToNode[vertex];
-            /*path.push_back(vertex);*/
             for (auto i : collectPartents(vertex))
             {
                 vertexType parent = i;
@@ -136,13 +143,10 @@ private:
                 }
             }
         }
-        
-        //path.push_back(graph[vertex][path[path.size()].id1]);
         std::reverse(path.begin(), path.end());
         return path;
     }
 public:
-    //проверка-добавление-удаление вершин
     bool has_vertex(const vertexType& v) const
     {
         return graph.count(v);
@@ -164,7 +168,7 @@ public:
         graph.erase(v);
         for (auto it = graph.begin(); it != graph.end();it++)
         {
-            if (it->second.count(v) != 0)//it->second.find(v) != it->second.end()
+            if (it->second.count(v) != 0)
             {
                 it->second.erase(v);
             }
@@ -180,7 +184,6 @@ public:
         }
         return vertextArray;
     }
-    ////проверка-добавление-удаление ребер
     void add_edge(const vertexType& from, const vertexType& to, const dist_type& d)
     {
         Edge<vertexType, dist_type> tmp(from, to, d);
@@ -199,7 +202,7 @@ public:
         }
         return false;
     }
-    bool remove_edge(const Edge<vertexType, dist_type>& e) //c учетом расстояния
+    bool remove_edge(const Edge<vertexType, dist_type>& e)
     {
         if (has_edge(e))
         {
@@ -232,7 +235,6 @@ public:
         }
         return false;
     }
-    ////получение всех ребер, выходящих из вершины
     std::vector<Edge<vertexType, dist_type>> edges(const vertexType& vertex)
     {
         
@@ -265,21 +267,10 @@ public:
         }
         return maxSize;
     }
-    void init()
-    {
-        for (auto it = graph.begin(); it != graph.end(); it++)
-        {
-            visited[it->first] = false;
-        }
-        //for (auto it = visited.begin(); it != visited.end(); it++)
-        //{
-        //    std::cout << it->first << " " << it->second;
-        //}
-    }
 
 
 
-    ////поиск кратчайшего пути
+
     std::vector<Edge<vertexType, dist_type>> shortest_path(const vertexType& from, const vertexType& to)
     {
         std::map<vertexType, dist_type> distToNode;
@@ -302,30 +293,87 @@ public:
         test1 = vertices();
         return test;
     }
-    ////обход BFS
-    void walk(const vertexType& start_vertex/*, std::function<void(const vertexType&)> action*/)
+    void walk(const vertexType& start_vertex, std::function<void(const vertexType&)> action)
     {
         init();
-        walk_(start_vertex);
+        walk_(start_vertex, action);
         std::cout << std::endl;
-        //for (auto& j : visited)
-        //{
-        //    std::cout << j.first << " - " << j.second << std::endl;
-        //}
+        for (auto& j : visited)
+        {
+            std::cout << j.first << " - " << j.second << std::endl;
+        }
         for (auto& it : visited)
         {
             if (!it.second)
             {
-                walk_(it.first);
+                walk_(it.first, action);
                 std::cout << std::endl;
-                //for (auto& j : visited)
-                //{
-                //    std::cout << j.first << " - " << j.second << std::endl;
-                //}
+                for (auto& j : visited)
+                {
+                    std::cout << j.first << " - " << j.second << std::endl;
+                }
             }
         }
     }
+    vertexType findOptimalVertex()
+    {
+        std::map<vertexType, dist_type> arrayOfDist;
+        for (auto it1 = graph.begin(); it1 != graph.end(); it1++)
+        {
+            int infCount = 0;
+            int okCount = graph.size() / 4;
+            dist_type sum = 0;
+            for (auto it2 = graph.begin(); it2 != graph.end(); it2++)
+            {
+                if (it1 == it2)
+                {
+                    continue;
+                }
+                std::vector<Edge<vertexType, dist_type>> tmp = shortest_path(it1->first, it2->first);
+                if (tmp.size() == 0)
+                {
+                    infCount++;
+                }
+                if (infCount >= okCount)
+                {
+                    arrayOfDist[it1->first] = std::numeric_limits<dist_type>::max();//kind of inf
+                    break;
+                }
+                for (auto i : tmp)
+                {
+                    sum += i.dist;
+                }
 
+            }
+            if (infCount < okCount)
+            {
+                arrayOfDist[it1->first] = sum;
+            }
+        }
+        vertexType vertexWithMinDist;
+        dist_type minDist = std::numeric_limits<dist_type>::max();
+        for (auto it = arrayOfDist.begin(); it != arrayOfDist.end(); it++)
+        {
+            dist_type dist = it->second;
+            if (dist < minDist)
+            {
+                minDist = dist;
+                vertexWithMinDist = it->first;
+            }
+        }
+        return vertexWithMinDist;
+    }
+    void init()
+    {
+        for (auto it = graph.begin(); it != graph.end(); it++)
+        {
+            visited[it->first] = false;
+        }
+        //for (auto it = visited.begin(); it != visited.end(); it++)
+        //{
+        //    std::cout << it->first << " " << it->second;
+        //}
+    }
     friend std::ostream& operator<<(std::ostream& os, MyGraph<vertexType, dist_type>& obj)
     {
         for (auto it1 = obj.graph.begin(); it1 != obj.graph.end(); it1++)

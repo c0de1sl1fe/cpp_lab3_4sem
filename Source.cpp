@@ -18,12 +18,33 @@
 //}
 //
 //#include<map>
-template<typename vertexType, typename dist_type = double>
-void print(Edge<vertexType, dist_type>& i)
+//template<typename vertexType, typename Distance = double>
+//void Print(const vertexType& val)
+//{
+//    cout << val << ' ';
+//}
+void exampleOfDijkstraAlgorithm()
 {
-    std::cout << i;
+    MyGraph<std::string> a;
+    a.add_vertex("a");
+    a.add_vertex("b");
+    a.add_vertex("c");
+    a.add_vertex("d");
+    a.add_vertex("e");
+    a.add_vertex("f");
+    a.add_edge("a", "c", 7);
+    a.add_edge("a", "b", 3);
+    a.add_edge("b", "d", 8);
+    a.add_edge("b", "e", 1);
+    a.add_edge("c", "d", 5);
+    a.add_edge("e", "f", 5);
+    a.add_edge("f", "d", 1);
+    std::cout << a;
+    for (auto i : a.shortest_path("a", "d"))
+    {
+        std::cout << i;
+    }
 }
-
 int main() 
 {
     //std::vector<std::shared_ptr<Edge>> array;
@@ -43,20 +64,15 @@ int main()
     //a.add_edge(1, 3, 2);
     //a.add_edge(2, 4, 6);
     //a.add_edge(3, 4, 4);
-    MyGraph<std::string> a;
-    a.add_vertex("a");
-    a.add_vertex("b");
-    a.add_vertex("c");
-    a.add_vertex("d");
-    a.add_edge("a", "b", 1);
-    a.add_edge("a", "c",  2);
-    a.add_edge("b", "d", 6);
-    a.add_edge("c", "d", 4);
-    std::cout << a;
-    for (auto i : a.shortest_path("a", "d"))
-    {
-        std::cout << i;
-    }
+    //std::cout << a;
+    ////a.walk(1, Print<int>);
+    ////std::cout << a.shortest_path(1,4).size();
+    //for (auto i : a.shortest_path(1, 4))
+    //{
+    //    std::cout << i.dist;
+    //}
+
+
     //for (auto  i: a.collectPartents(3))
     //{
     //    std::cout << i;
