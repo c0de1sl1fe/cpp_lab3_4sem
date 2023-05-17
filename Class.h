@@ -3,6 +3,13 @@
 #include <memory>
 #include <vector>
 #include<map>
+#include <algorithm>
+#include <functional>
+#include <queue>
+int compare(const void* a, const void* b)
+{
+    return (*(int*)a - *(int*)b);
+}
 template<typename vertexType, typename dist_type = double>
 struct Edge
 {
@@ -22,18 +29,18 @@ struct Edge
 
 };
 
-template<>
-struct Edge<std::string, double>
+template<typename dist_type>
+struct Edge<std::string, dist_type>
 {
     std::string id1;
     std::string id2;
-    double dist;
-    Edge(std::string id1_ = " ", std::string id2_ = " ", double distance_ = 0) : id1(id1_), id2(id2_), dist(distance_) {}
+    dist_type dist;
+    Edge(std::string id1_ = " ", std::string id2_ = " ", dist_type distance_ = 0) : id1(id1_), id2(id2_), dist(distance_) {}
     bool operator ==(Edge& src)
     {
         return (id1 == src.id1 && id2 == src.id2 && dist == src.dist);
     }
-    friend std::ostream& operator<<(std::ostream& os, Edge<std::string, double>& obj)
+    friend std::ostream& operator<<(std::ostream& os, Edge<std::string, dist_type>& obj)
     {
         os << "(" << obj.id1 << ", " << obj.id2 << ")_" << obj.dist << " ";
         return os;
@@ -45,13 +52,71 @@ class MyGraph {
 private:
 
     std::map<vertexType, std::map<vertexType, Edge<vertexType, dist_type>>> graph;
+    std::map<vertexType, bool> visited;
+
+    void walk_(const vertexType& start_vertex/*, std::function<void(const vertexType&)> action*/)
+    {
+        std::cout << "ok";
+        visited[start_vertex] = true;
+        std::queue<vertexType> queue;
+        queue.push(start_vertex);
+        vertexType tmp = queue.front();
+        while (!queue.empty())
+        {
+            queue.pop();
+            std::cout << tmp;
+            //action(tmp);
+            for (auto it = graph[tmp].begin(); it != graph[tmp].end(); it++)
+            {
+                if(!visited[it->first])
+                    queue.push(it->first);
+            }
+            tmp = queue.front();
+            visited[tmp] = true;
+        }
+    }
+    vertexType getVertexWithMinDist(std::map<vertexType, bool> unproceesedVertes, std::map<vertexType, dist_type> distToNode)
+    {
+        vertexType vertexWithMinDist; // will be error with string
+        dist_type minDist= std::numeric_limits<dist_type>::max();
+        for (auto it = unproceesedVertes.begin(); it != unproceesedVertes.end(); it++)
+        {
+            dist_type dist = it->second;
+            if (dist < minDist)
+            {
+                minDist = dist;
+                vertexWithMinDist = it->first;
+            }
+        }
+        return vertexWithMinDist;
+    }
+    void calculateDistToEachVertex(std::map<vertexType, bool> unproceesedVertes, std::map<vertexType, dist_type> distToNode)
+    {
+        while (!unproceesedVertes.empty())
+        {
+            vertexType vertex = getVertexWithMinDist(unproceesedVertes, distToNode);
+            if (distToNode[vertex] == std::numeric_limits<dist_type>::max())
+                return;
+            for (auto it = graph[vertex].begin(); it != graph[vertex].end(); it++)
+            {
+                vertexType adjacentVertex = it->first;
+                if (unproceesedVertes.count(adjacentVertex) != 0)
+                {
+                    dist_type dist = distToNode[vertex] + it->second.dist;
+                }
+            }
+        }
+    }
+    std::vector<Edge<vertexType, dist_type>> shortest_path_(const vertexType& from, const vertexType& to)
+    {
+
+    }
 public:
     //проверка-добавление-удаление вершин
     bool has_vertex(const vertexType& v) const
     {
         return graph.count(v);
     }
-
     void add_vertex(const vertexType& v)
     {
         if (!has_vertex(v))
@@ -75,7 +140,6 @@ public:
             }
         }
         return true;
-
     }
     std::vector<vertexType> vertices() const
     {
@@ -153,13 +217,80 @@ public:
         }
         return edgesArray;
     }
-    //size_t order() const; //порядок
-    //size_t degree() const; //степень
+    size_t order() const //порядок
+    {
+        return graph.size();
+    }
+    size_t degree() const //степень
+    {
+        int maxSize = -1;
+        for (auto it = graph.begin(); it != graph.end(); it++)
+        {
+            std::vector<Edge<vertexType, dist_type>> edgesTmp = edges(it->first);
+            int size = edgesTmp.size();
+            if (size > maxSize)
+            {
+                maxSize = size;
+            }
+        }
+        return maxSize;
+    }
+    void init()
+    {
+        for (auto it = graph.begin(); it != graph.end(); it++)
+        {
+            visited[it->first] = false;
+        }
+        //for (auto it = visited.begin(); it != visited.end(); it++)
+        //{
+        //    std::cout << it->first << " " << it->second;
+        //}
+    }
+
+
+
     ////поиск кратчайшего пути
-    //std::vector<Edge> shortest_path(const vertexType& from,
-    //    const vertexType& to) const;
-    ////обход
-    //std::vector<vertexType> walk(const vertexType& start_vertex)const;
+    std::vector<Edge<vertexType, dist_type>> shortest_path(const vertexType& from, const vertexType& to) const
+    {
+        std::map<vertexType, dist_type> distToNode;
+        std::map<vertexType, vertexType> prev;
+        std::map<vertexType, bool> unproceesedVertes;
+        std::vector<Edge> shortestPath;
+        for (auto i = graph.begin(); i != graph.end(); i++)
+        {
+            distToNode[i->first] = std::numeric_limits<dist_type>::max();
+            unproceesedVertes[i->first] = true;
+        }
+        distToNode[from] = 0;
+        calculateDistToEachVertex(unproceesedVertes, distToNode);
+        if (distToNode[to] == std::numeric_limits<dist_type>::max())
+            return NULL;
+        return getShortestPath_(from, to, distToNode);
+    }
+    ////обход BFS
+    void walk(const vertexType& start_vertex/*, std::function<void(const vertexType&)> action*/)
+    {
+        init();
+        walk_(start_vertex);
+        std::cout << std::endl;
+        //for (auto& j : visited)
+        //{
+        //    std::cout << j.first << " - " << j.second << std::endl;
+        //}
+        for (auto& it : visited)
+        {
+            if (!it.second)
+            {
+                walk_(it.first);
+                std::cout << std::endl;
+                //for (auto& j : visited)
+                //{
+                //    std::cout << j.first << " - " << j.second << std::endl;
+                //}
+            }
+        }
+    }
+
     friend std::ostream& operator<<(std::ostream& os, MyGraph<vertexType, dist_type>& obj)
     {
         for (auto it1 = obj.graph.begin(); it1 != obj.graph.end(); it1++)

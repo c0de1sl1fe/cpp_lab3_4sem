@@ -18,6 +18,11 @@
 //}
 //
 //#include<map>
+template<typename vertexType, typename dist_type = double>
+void print(Edge<vertexType, dist_type>& i)
+{
+    std::cout << i;
+}
 
 int main() 
 {
@@ -32,20 +37,62 @@ int main()
     MyGraph<int> a;
     a.add_vertex(1);
     a.add_vertex(2);
+    a.add_vertex(3);
+    a.add_vertex(4);
+    a.add_edge(1, 3, 5);
+    a.add_edge(2, 4, 5);
     a.add_edge(1, 2, 5);
+    std::cout << a;
+    a.edges(1);
+    
+    
 
     //std::cout << a;
-    std::cout << a.has_edge(1, 2);
-    std::cout << std::endl;
-    for (auto i : a.edges(1))
-    {
-        std::cout << i;
-    }
+    //std::cout << a.has_edge(1, 2);
+    //std::cout << std::endl;
+    //for (auto i : a.vertices())
+    //{
+    //    std::cout << i;
+    //}
+    //std::cout << a.order();
+    //std::cout << std::endl;
+    //a.init();
+    // 
+    //std::vector<int> tmp11 = { 3, 2, 1 };
+    //std::qsort(tmp11.data(), tmp11.size(),sizeof(int),  compare);
+    //for (auto i : tmp11)
+    //{
+    //    std::cout << i;
+    //}
+    //MyGraph<std::string> a;
+    //a.add_vertex("test1");
+    //a.add_vertex("test2");
+    //a.add_edge("test1", "test2", 5);
 
+    ////std::cout << a;
+    //std::cout << a.has_edge("test1", "test2");
+    //std::cout << std::endl;
+    //for (auto i : a.vertices())
+    //{
+    //    std::cout << i;
+    //}
     //std::map<int, std::map<double, bool>> test;
     //test[1][1.1] = 0;
     //test[1][2.2] = 1;
     //test[2][23.12] = 0;
+    //std::map<int, int>test;
+    //test[1] = 2;
+    //std::cout << test.count(121);
+    //for (auto i = test.begin(); i != test.end(); i++)
+    //{
+    //    std::cout << i->first;
+    //    std::cout << i->second;
+    //}
+    //std::cout << test.empty();
+    //test.erase(1);
+    //test.erase(2);
+    //std::cout << test.empty();
+    
     //if (test[1].find(13) != test[1].end())
     //{
     //    std::cout << test[1][1];
@@ -61,6 +108,14 @@ int main()
     //    std::cout << "\n";
 
     //}
-    
+    //std::queue<int> test;
+    //test.push(1);
+    //test.push(2);
+    //test.push(3);
+    //test.push(4);
+    //test.pop();
+    //std::cout << test.front()   ;
+    //while (test.empty())
+
     return 1;
 }
