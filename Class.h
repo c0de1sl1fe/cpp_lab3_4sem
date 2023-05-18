@@ -80,12 +80,9 @@ private:
             }
         }
     }
-
     vertexType getVertexWithMinDist(std::map<vertexType, bool>& unproceesedVertes, std::map<vertexType, dist_type>& distToNode)
     {
-        //for (auto iterator = distToNode.begin(); iterator != distToNode.end(); iterator++)
-        //    std::cout << iterator->first << " - "<<iterator->second;
-        vertexType vertexWithMinDist;
+        vertexType vertexWithMinDist = 0;
         dist_type minDist= std::numeric_limits<dist_type>::max();
         for (auto it = unproceesedVertes.begin(); it != unproceesedVertes.end(); it++)
         {
@@ -103,6 +100,8 @@ private:
         while (!unproceesedVertes.empty())
         {
             vertexType vertex = getVertexWithMinDist(unproceesedVertes, distToNode);
+            if (vertex == 0)
+                return;
             if (distToNode[vertex] == std::numeric_limits<dist_type>::max())
                 return;
             for (auto it = graph[vertex].begin(); it != graph[vertex].end(); it++)
@@ -118,9 +117,6 @@ private:
                 }
             }
             unproceesedVertes.erase(vertex);
-            std::cout << std::endl;
-
-
         }
     }
     std::vector<Edge<vertexType, dist_type>> getShortestPath_(const vertexType& from, const vertexType& to, std::map<vertexType, dist_type>& distToNode)
@@ -200,8 +196,7 @@ public:
             }
             return false;
         }
-        return false;
-      
+        return false; 
     }
     bool remove_edge(const vertexType& from, const vertexType& to)
     {
@@ -222,7 +217,6 @@ public:
     }
     bool has_edge(const vertexType& from, const vertexType& to)
     {
-
         if (has_vertex(from) && has_vertex(to))
         {
             if (graph[from].count(to) != 0)//graph[from].find(to) != graph[from].end()
@@ -232,7 +226,7 @@ public:
         }
         return false;
     }
-    bool has_edge(const Edge<vertexType, dist_type>& e) //c учетом расстояния в Edge
+    bool has_edge(const Edge<vertexType, dist_type>& e)
     {
         if (has_vertex(e.id1) && has_vertex(e.id2))
         {
@@ -260,11 +254,11 @@ public:
         }
         return edgesArray;
     }
-    size_t order() const //порядок
+    size_t order() const
     {
         return graph.size();
     }
-    size_t degree() const //степень
+    size_t degree() const
     {
         int maxSize = -1;
         for (auto it = graph.begin(); it != graph.end(); it++)
@@ -278,10 +272,6 @@ public:
         }
         return maxSize;
     }
-
-
-
-
     std::vector<Edge<vertexType, dist_type>> shortest_path(const vertexType& from, const vertexType& to)
     {
         std::map<vertexType, dist_type> distToNode;
@@ -293,17 +283,12 @@ public:
             unproceesedVertes[i->first] = true;
         }
         distToNode[from] = 0;
-        //Print<vertexType>(from);
-        //Print<vertexType>(to);
-
         calculateDistToEachVertex(unproceesedVertes, distToNode);
         std::vector<Edge<vertexType, dist_type>> test;
         std::vector<vertexType>test1;
         if (distToNode[to] == std::numeric_limits<dist_type>::max())
             return test;
-
         test = getShortestPath_(from, to, distToNode);
-
         test1 = vertices();
         return test;
     }
@@ -332,18 +317,13 @@ public:
             int infCount = 0;
             int okCount = graph.size() / 4;
             dist_type sum = 0;
-            //std::cout << "Now is " << it1->first << std::endl;
-
             for (auto it2 = graph.begin(); it2 != graph.end(); it2++)
             {
-                //std::cout << "\tNow is " << it2->first << std::endl;
                 if (it1 == it2)
                 {
                     continue;
                 }
-                std::cout << "1" << std::endl;
                 std::vector<Edge<vertexType, dist_type>> tmp = shortest_path(it1->first, it2->first);
-                std::cout << "2" << std::endl;
                 //if (tmp.size() == 0)
                 //{
                 //    infCount++;
@@ -356,14 +336,12 @@ public:
                 if (tmp.size() == 0)
                 {
                     arrayOfDist[it1->first] = std::numeric_limits<dist_type>::max();//kind of inf
-                    std::cout << "inf";
                     break;
                 }
                 for (auto i : tmp)
                 {
                     sum += i.dist;
                 }
-                //std::cout << sum;
             }
             if (arrayOfDist[it1->first] != std::numeric_limits<dist_type>::max())
             {
@@ -394,10 +372,6 @@ public:
         {
             visited[it->first] = false;
         }
-        //for (auto it = visited.begin(); it != visited.end(); it++)
-        //{
-        //    std::cout << it->first << " " << it->second;
-        //}
     }
     friend std::ostream& operator<<(std::ostream& os, MyGraph<vertexType, dist_type>& obj)
     {
@@ -425,3 +399,47 @@ public:
         return parents;
     }
 };
+
+template<>
+std::string MyGraph<std::string, double>::getVertexWithMinDist(std::map<std::string, bool>& unproceesedVertes, std::map<std::string, double>& distToNode)
+{
+    {
+        std::string vertexWithMinDist = "";
+        double minDist = std::numeric_limits<double>::max();
+        for (auto it = unproceesedVertes.begin(); it != unproceesedVertes.end(); it++)
+        {
+            double dist = distToNode[it->first];
+            if (dist < minDist)
+            {
+                minDist = dist;
+                vertexWithMinDist = it->first;
+            }
+        }
+        return vertexWithMinDist;
+    }
+}
+template<>
+void MyGraph<std::string, double>::calculateDistToEachVertex(std::map<std::string, bool>& unproceesedVertes, std::map<std::string, double>& distToNode)
+{
+    while (!unproceesedVertes.empty())
+    {
+        std::string vertex = getVertexWithMinDist(unproceesedVertes, distToNode);
+        if (vertex == "")
+            return;
+        if (distToNode[vertex] == std::numeric_limits<double>::max())
+            return;
+        for (auto it = graph[vertex].begin(); it != graph[vertex].end(); it++)
+        {
+            std::string adjacentVertex = it->first;
+            if (unproceesedVertes.count(adjacentVertex) != 0)
+            {
+                double distToCheck = distToNode[vertex] + it->second.dist;
+                if (distToCheck < distToNode[adjacentVertex])
+                {
+                    distToNode[adjacentVertex] = distToCheck;
+                }
+            }
+        }
+        unproceesedVertes.erase(vertex);
+    }
+}

@@ -123,6 +123,12 @@ void main()
 //{
 //    std::cout << i;
 //}
+    //MyGraph<int> a;
+    //a.add_vertex(1);
+    //a.add_vertex(2);
+    //a.add_edge(2, 1, 1);
+    //for (auto i : a.shortest_path(1, 2))
+    //    std::cout << i;
     MyGraph<int>graph;
     graph.add_vertex(1);
     graph.add_vertex(2);
@@ -140,10 +146,10 @@ void main()
     graph.add_edge(5, 3, 9);
     graph.add_edge(6, 5, 1);
     graph.add_edge(6, 2, 7);
- /*   for (auto i : graph.shortest_path(3, 1))
-    {
-        std::cout << i;
-    }*/
+    //for (auto i : graph.shortest_path(3, 1))
+    //{
+    //    std::cout << i;
+    //}
     std::cout << "Point: " << graph.findOptimalVertex() << std::endl;
     system("pause");
 
