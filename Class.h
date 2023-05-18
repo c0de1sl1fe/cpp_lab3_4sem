@@ -73,10 +73,10 @@ private:
                 for (auto it = graph[tmp].begin(); it != graph[tmp].end(); it++)
                 {
                     if (!visited[it->first])
-
                         queue.push(it->first);
                 }
-                tmp = queue.front();
+                if(!queue.empty())
+                    tmp = queue.front();
             }
         }
     }
