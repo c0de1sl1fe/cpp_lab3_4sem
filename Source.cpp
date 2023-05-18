@@ -104,58 +104,8 @@ void menu11()
     std::cout << "10. Back menu" << std::endl;
     std::cout << "choice: ";
 }
-void main()
-{
-    //MyGraph<int> graph;
-    //std::cout << graph.has_vertex(1);
-    //graph.add_edge(1, 1, 1);
-    //std::cout << graph;
-     
 
-//    MyGraph<int>a;
-//    a.add_vertex(1);
-//    a.add_vertex(2);
-//    a.add_vertex(3);
-//    a.add_edge(1, 3, 4);
-//    a.add_edge(3, 1, 2);
-//    a.add_edge(1, 2, 10);
-//    for (auto i : a.shortest_path(1, 2))
-//{
-//    std::cout << i;
-//}
-    //MyGraph<int> a;
-    //a.add_vertex(1);
-    //a.add_vertex(2);
-    //a.add_edge(2, 1, 1);
-    //for (auto i : a.shortest_path(1, 2))
-    //    std::cout << i;
-    MyGraph<int>graph;
-    graph.add_vertex(1);
-    graph.add_vertex(2);
-    graph.add_vertex(3);
-    graph.add_vertex(4);
-    graph.add_vertex(5);
-    graph.add_vertex(6);
-    graph.add_edge(1, 2, 3);
-    graph.add_edge(1, 4, 8);
-    graph.add_edge(2, 1, 2);
-    graph.add_edge(2, 5, 5);
-    graph.add_edge(2, 3, 6);
-    graph.add_edge(4, 6, 7);
-    graph.add_edge(5, 4, 5);
-    graph.add_edge(5, 3, 9);
-    graph.add_edge(6, 5, 1);
-    graph.add_edge(6, 2, 7);
-    //for (auto i : graph.shortest_path(3, 1))
-    //{
-    //    std::cout << i;
-    //}
-    std::cout << "Point: " << graph.findOptimalVertex() << std::endl;
-    system("pause");
-
-
-}
-int main1() 
+int main() 
 {
     int choice = 0;
     bool exit = false;
@@ -773,7 +723,8 @@ int main1()
             graph.add_edge(5, 3, 9);
             graph.add_edge(6, 5, 1);
             graph.add_edge(6, 2, 7);
-            std::cout << "Point: " << graph.findOptimalVertex() << std::endl;
+            std::cout << graph << std::endl;
+            std::cout << "Optimal point is: " << graph.findOptimalVertex() << std::endl;
             system("pause");
             break;
         }
