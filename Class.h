@@ -60,8 +60,6 @@ private:
     std::map<vertexType, bool> visited;
     void walk_(const vertexType& start_vertex, std::function<void(const vertexType&)> action)
     {
-        std::cout << "ok ";
-        //visited[start_vertex] = true;
         std::queue<vertexType> queue;
         queue.push(start_vertex);
         vertexType tmp = queue.front();
@@ -89,7 +87,6 @@ private:
         dist_type minDist= std::numeric_limits<dist_type>::max();
         for (auto it = unproceesedVertes.begin(); it != unproceesedVertes.end(); it++)
         {
-            //dist_type dist = it->second;
             dist_type dist = distToNode[it->first];
             if (dist < minDist)
             {
@@ -149,15 +146,17 @@ private:
 public:
     bool has_vertex(const vertexType& v) const
     {
-        return graph.count(v);
+        return (graph.count(v) != 0);
     }
-    void add_vertex(const vertexType& v)
+    bool add_vertex(const vertexType& v)
     {
         if (!has_vertex(v))
         {
             std::map<vertexType, Edge<vertexType, dist_type>> tmp;
             graph[v] = tmp;
+            return true;
         }
+        return false;
     }
     bool remove_vertex(const vertexType& v)
     {
@@ -184,13 +183,19 @@ public:
         }
         return vertextArray;
     }
-    void add_edge(const vertexType& from, const vertexType& to, const dist_type& d)
+    bool add_edge(const vertexType& from, const vertexType& to, const dist_type& d)
     {
-        Edge<vertexType, dist_type> tmp(from, to, d);
-        if (!has_edge(tmp))
+        if (has_vertex(from) && has_vertex(to))
         {
-            graph[from][to] = tmp;
+            Edge<vertexType, dist_type> tmp(from, to, d);
+            if (!has_edge(tmp))
+            {
+                graph[from][to] = tmp;
+                return true;
+            }
+            return false;
         }
+        return false;
       
     }
     bool remove_edge(const vertexType& from, const vertexType& to)
@@ -212,6 +217,7 @@ public:
     }
     bool has_edge(const vertexType& from, const vertexType& to)
     {
+
         if (has_vertex(from) && has_vertex(to))
         {
             if (graph[from].count(to) != 0)//graph[from].find(to) != graph[from].end()
@@ -295,23 +301,18 @@ public:
     }
     void walk(const vertexType& start_vertex, std::function<void(const vertexType&)> action)
     {
+        if (!has_vertex(start_vertex))
+        {
+            return;
+        }
         init();
         walk_(start_vertex, action);
-        std::cout << std::endl;
-        for (auto& j : visited)
-        {
-            std::cout << j.first << " - " << j.second << std::endl;
-        }
         for (auto& it : visited)
         {
             if (!it.second)
             {
                 walk_(it.first, action);
                 std::cout << std::endl;
-                for (auto& j : visited)
-                {
-                    std::cout << j.first << " - " << j.second << std::endl;
-                }
             }
         }
     }

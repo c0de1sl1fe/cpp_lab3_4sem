@@ -33,6 +33,7 @@ void exampleOfDijkstraAlgorithm()
     a.add_vertex("e");
     a.add_vertex("f");
     a.add_edge("a", "c", 7);
+    a.add_edge("a", "a", 7);
     a.add_edge("a", "b", 3);
     a.add_edge("b", "d", 8);
     a.add_edge("b", "e", 1);
@@ -44,113 +45,906 @@ void exampleOfDijkstraAlgorithm()
     {
         std::cout << i;
     }
+    a.walk("a", Print<std::string>);
 }
+double EnterNumber()
+{
+    double tmp;
+    char stmp[24];
+    bool exit1 = false;
+    while (!exit1)
+    {
+        bool exit = true;
+        gets_s(stmp);
+        char* endptr = stmp;
+        tmp = strtod(stmp, &endptr);
+        if (endptr == stmp)
+        {
+            exit = false;
+            continue;
+        }
+        if ((tmp == DBL_MAX || tmp == DBL_MIN) && errno == ERANGE)
+        {
+            exit = false;
+            continue;
+        }
+        while (*endptr)
+        {
+            if ((*endptr != ' ') && (*endptr != '\n'))
+            {
+                exit = false;
+                break;
+            }
+            endptr++;
+        }
+        if (exit)
+        {
+            exit1 = true;
+        }
+        else
+        {
+            exit1 = false;
+            printf("\nsomething wrong with number\n");
+        }
+    }
+    return tmp;
+}
+
+void menu()
+{
+    system("cls");
+    std::cout << "1. Create a graph" << std::endl;
+    std::cout << "2. Task" << std::endl;
+    std::cout << "3. ExtraTask" << std::endl;
+    std::cout << "4. Finish the program" << std::endl;
+    std::cout << "choice: ";
+}
+void menu1()
+{
+    system("cls");
+    std::cout << "Choose data type for the vertices:" << std::endl;
+    std::cout << "1. int" << std::endl;
+    std::cout << "2. double" << std::endl;
+    std::cout << "3. string" << std::endl;
+    std::cout << "4. back main menu " << std::endl;
+    std::cout << "choice: ";
+}
+void menu11()
+{
+    system("cls");
+    std::cout << "1. Add vertix" << std::endl;
+    std::cout << "2. Remove vertix" << std::endl;
+    std::cout << "3. Add edge" << std::endl;
+    std::cout << "4. Exist edge" << std::endl;
+    std::cout << "5. Remove edge weight" << std::endl;
+    std::cout << "6. Remove edge weightless" << std::endl;
+    std::cout << "7. Find the shortest path" << std::endl;
+    std::cout << "8. BFS" << std::endl;
+    std::cout << "9. Print graph" << std::endl;
+    std::cout << "10. Back menu" << std::endl;
+    std::cout << "choice: ";
+}
+//void main()
+//{
+//    MyGraph<int> graph;
+//    std::cout << graph.has_vertex(1);
+//    graph.add_edge(1, 1, 1);
+//    std::cout << graph;
+//
+//}
 int main() 
 {
-    //std::vector<std::shared_ptr<Edge>> array;
-    //std::vector<Edge*> array1;
-    //Foo(array);
-    //std::map<int, int> test;
-    //test[1] = 1;
-    //std::cout << (test.find(1)==test.end());
+    int choice = 0;
+    bool exit = false;
+    while (!exit)
+    {
+        menu();
+        choice = EnterNumber();
+        switch (choice)
+        {
+        case(1):
+        {
+            int choice1 = 0;
+            bool exit1 = false;
+            while (!exit1)
+            {
+                menu1();
+                choice1 = EnterNumber();
+                switch (choice1)
+                {
+                case(1):
+                {
+                    //type_int
+                    int choice11 = 0;
+                    bool exit11 = false;
+                    MyGraph<int> graph;
+                    while (!exit11)
+                    {
+                        menu11();
+                        choice11 = EnterNumber();
+                        switch (choice11)
+                        {
+                        case(1):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            int vertex = (int)EnterNumber();
+                            if (!graph.add_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " already exist";
+                            }
+                            else
+                            {
+                                std::cout << "Vertex has been added successfully" << std::endl;
+                            }
+                            std::cout << graph;
+                            system("pause");
+                            break;
+                        }
+                        case(2):
+                        {
+                            std::cout << "Enter vertex: ";
+                            system("cls");
+                            int vertex = (int)EnterNumber();
+                            if (!graph.remove_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Vertex has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(3):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            int vertex1 = (int)EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            int vertex2 = (int)EnterNumber();
+                            std::cout << "enter weight of edge: ";
+                            double weight = EnterNumber();
+                            if (!graph.add_edge(vertex1, vertex2, weight))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " already exist or doesn't exist vertex1: " << vertex1 << " or vertex2: " << vertex2 << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been added successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(4):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            int vertex1 = (int)EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            int vertex2 = (int)EnterNumber();
+                            if (!graph.has_edge(vertex1, vertex2))
+                            {
+                                std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " exists";
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(5):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            int vertex1 = (int)EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            int vertex2 = (int)EnterNumber();
+                            std::cout << "enter weight of edge: ";
+                            double weight = EnterNumber();
+                            Edge<int> tmp(vertex1, vertex2, weight);
+                            if (!graph.remove_edge(tmp))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(6):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            int vertex1 = (int)EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            int vertex2 = (int)EnterNumber();
+                            if (!graph.remove_edge(vertex1, vertex2))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(7):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            int vertex1 = (int)EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            int vertex2 = (int)EnterNumber();
+                            std::vector<Edge<int>> tmp = graph.shortest_path(vertex1, vertex2);
+                            if (tmp.size() == 0)
+                            {
+                                std::cout << "Shortest path doesn't exist" << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << std::endl << "Shortest path: ";
+                                for (auto i : tmp)
+                                {
+                                    std::cout << i << " ";
+                                }
+                            }
+                            std::cout << std::endl;
+                            system("pause");
+                            break;
+                        }
+                        case(8):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            int vertex = (int)EnterNumber();
+                            if (!graph.has_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "BFS: ";
+                                graph.walk(vertex, Print<int>);
+                            }
+                            std::cout << std::endl;
+                            system("pause");
+                            break;
+                        }
+                        case(9):
+                        {
+                            std::cout << graph;
+                            system("pause");
+                            break;
+                        }
+                        case(10):
+                        {
+                            std::cout << "Take care, polar bear!" << std::endl;
+                            exit11 = true;
+                            break;
+                        }
+                        default:
+                            std::cout << "something went wrong, try again" << std::endl;
+                            system("pause");
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case(2):
+                {
+                    //type_double
+                    int choice11 = 0;
+                    bool exit11 = false;
+                    MyGraph<double> graph;
+                    while (!exit11)
+                    {
+                        menu11();
+                        choice11 = EnterNumber();
+                        switch (choice11)
+                        {
+                        case(1):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            double vertex = EnterNumber();
+                            if (!graph.add_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " already exist";
+                            }
+                            else
+                            {
+                                std::cout << "Vertex has been added successfully" << std::endl;
+                            }
+                            std::cout << graph;
+                            system("pause");
+                            break;
+                        }
+                        case(2):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            double vertex = EnterNumber();
+                            if (!graph.remove_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Vertex has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(3):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            double vertex1 = EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            double vertex2 = EnterNumber();
+                            std::cout << "enter weight of edge: ";
+                            double weight = EnterNumber();
+                            if (!graph.add_edge(vertex1, vertex2, weight))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " already exist or doesn't exist vertex1: " << vertex1 << " or vertex2: " << vertex2 << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been added successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(4):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            double vertex1 = EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            double vertex2 = EnterNumber();
+                            if (!graph.has_edge(vertex1, vertex2))
+                            {
+                                std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " exists";
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(5):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            double vertex1 = EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            double vertex2 = EnterNumber();
+                            std::cout << "enter weight of edge: ";
+                            double weight = EnterNumber();
+                            Edge<double> tmp(vertex1, vertex2, weight);
+                            if (!graph.remove_edge(tmp))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(6):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            double vertex1 = EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            double vertex2 = EnterNumber();
+                            if (!graph.remove_edge(vertex1, vertex2))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(7):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            double vertex1 = EnterNumber();
+                            std::cout << "enter second vertex: ";
+                            double vertex2 = EnterNumber();
+                            std::vector<Edge<double>> tmp = graph.shortest_path(vertex1, vertex2);
+                            if (tmp.size() == 0)
+                            {
+                                std::cout << "Shortest path doesn't exist" << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << std::endl << "Shortest path: ";
+                                for (auto i : tmp)
+                                {
+                                    std::cout << i << " ";
+                                }
+                            }
+                            std::cout << std::endl;
+                            system("pause");
+                            break;
+                        }
+                        case(8):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            double vertex = EnterNumber();
+                            if (!graph.has_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "BFS: ";
+                                graph.walk(vertex, Print<double>);
+                            }
+                            std::cout << std::endl;
+                            system("pause");
+                            break;
+                        }
+                        case(9):
+                        {
+                            std::cout << graph;
+                            system("pause");
+                            break;
+                        }
+                        case(10):
+                        {
+                            std::cout << "Take care, polar bear!" << std::endl;
+                            exit11 = true;
+                            break;
+                        }
+                        default:
+                            std::cout << "something went wrong, try again" << std::endl;
+                            system("pause");
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case(3):
+                {
+                    //type_string
+                    int choice11 = 0;
+                    bool exit11 = false;
+                    MyGraph<std::string> graph;
+                    while (!exit11)
+                    {
+                        menu11();
+                        choice11 = EnterNumber();
+                        switch (choice11)
+                        {
+                        case(1):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            std::string vertex = " ";
+                            std::cin >> vertex;
+                            if (!graph.add_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " already exist";
+                            }
+                            else
+                            {
+                                std::cout << "Vertex has been added successfully" << std::endl;
+                            }
+                            std::cout << graph;
+                            system("pause");
+                            break;
+                        }
+                        case(2):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex";
+                            std::string vertex = " ";
+                            std::cin >> vertex;
+                            if (!graph.remove_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Vertex has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(3):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            std::string vertex1 = " ";
+                            std::cin >> vertex1;
+                            std::cout << "enter second vertex: ";
+                            std::string vertex2 = " ";
+                            std::cin >> vertex2;
+                            std::cout << "enter weight of edge: ";
+                            double weight = EnterNumber();
+                            if (!graph.add_edge(vertex1, vertex2, weight))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " already exist or doesn't exist vertex1: " << vertex1 << " or vertex2: " << vertex2 << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been added successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(4):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            std::string vertex1 = " ";
+                            std::cin >> vertex1;
+                            std::cout << "enter second vertex: ";
+                            std::string vertex2 = " ";
+                            std::cin >> vertex2;
+                            if (!graph.has_edge(vertex1, vertex2))
+                            {
+                                std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " exists";
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(5):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            std::string vertex1 = " ";
+                            std::cin >> vertex1;
+                            std::cout << "enter second vertex: ";
+                            std::string vertex2 = " ";
+                            std::cin >> vertex2;
+                            std::cout << "enter weight of edge: ";
+                            double weight = EnterNumber();
+                            Edge<std::string> tmp(vertex1, vertex2, weight);
+                            if (!graph.remove_edge(tmp))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(6):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            std::string vertex1 = " ";
+                            std::cin >> vertex1;
+                            std::cout << "enter second vertex: ";
+                            std::string vertex2 = " ";
+                            std::cin >> vertex2;
+                            if (!graph.remove_edge(vertex1, vertex2))
+                            {
+                                std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "Edge has been erased successfully" << std::endl;
+                            }
+                            system("pause");
+                            break;
+                        }
+                        case(7):
+                        {
+                            system("cls");
+                            std::cout << "enter first vertex: ";
+                            std::string vertex1 = " ";
+                            std::cin >> vertex1;
+                            std::cout << "enter second vertex: ";
+                            std::string vertex2 = " ";
+                            std::cin >> vertex2;
+                            std::vector<Edge<std::string>> tmp = graph.shortest_path(vertex1, vertex2);
+                            if (tmp.size() == 0)
+                            {
+                                std::cout << "Shortest path doesn't exist" << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << std::endl << "Shortest path: ";
+                                for (auto i : tmp)
+                                {
+                                    std::cout << i << " ";
+                                }
+                            }
+                            std::cout << std::endl;
+                            system("pause");
+                            break;
+                        }
+                        case(8):
+                        {
+                            system("cls");
+                            std::cout << "Enter vertex: ";
+                            std::string vertex = " ";
+                            std::cin >> vertex;
+                            if (!graph.has_vertex(vertex))
+                            {
+                                std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+                            }
+                            else
+                            {
+                                std::cout << "BFS: ";
+                                graph.walk(vertex, Print<std::string>);
+                            }
+                            std::cout << std::endl;
+                            system("pause");
+                            break;
+                        }
+                        case(9):
+                        {
+                            std::cout << graph;
+                            system("pause");
+                            break;
+                        }
+                        case(10):
+                        {
+                            std::cout << "Take care, polar bear!" << std::endl;
+                            exit11 = true;
+                            break;
+                        }
+                        default:
+                            std::cout << "something went wrong, try again" << std::endl;
+                            system("pause");
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case(4):
+                {
+                    std::cout << "See you later, alligator!" << std::endl;
+                    exit1 = true;
+                    break;
+                }
+                default:
+                    std::cout << "something went wrong, try again" << std::endl;
+                    system("pause");
+                    break;
+                }
+            }
+            break;
+        }
+        case(2):
+        {
+            exampleOfDijkstraAlgorithm();
+            system("pause");
+            break;
+        }
+        case(3):
+        {
+            system("cls");
+            std::cout << "dfs through graph uning extra function \"Print<typedata>\"" << std::endl;
+            MyGraph<int> a;
+            a.add_vertex(1);
+            a.add_vertex(2);
+            a.add_vertex(3);
+            a.add_vertex(4);
+            a.add_edge(1, 2, 1);
+            a.add_edge(1, 3, 2);
+            a.add_edge(2, 4, 6);
+            a.add_edge(3, 4, 4);
+            std::cout << a << std::endl;
+            a.walk(1, Print<int>);
+            system("pause");
+            break;
+        }
+        case(4):
+        {
+            std::cout << "See you soon, raccoon!" << std::endl;
+            exit = true;
+            break;
+        }
+        default:
+            std::cout << "something went wrong, try again" << std::endl;
+            system("pause");
+            break;
+        }
+    }
 
 
-    //MyGraph<int> a;
-    //a.add_vertex(1);
-    //a.add_vertex(2);
-    //a.add_vertex(3);
-    //a.add_vertex(4);
-    //a.add_edge(1, 2, 1);
-    //a.add_edge(1, 3, 2);
-    //a.add_edge(2, 4, 6);
-    //a.add_edge(3, 4, 4);
-    //std::cout << a;
-    ////a.walk(1, Print<int>);
-    ////std::cout << a.shortest_path(1,4).size();
-    //for (auto i : a.shortest_path(1, 4))
+    //int choice11 = 0;
+    //bool exit11 = false;
+    //while (!exit11)
     //{
-    //    std::cout << i.dist;
-    //}
-
-
-    //for (auto  i: a.collectPartents(3))
-    //{
-    //    std::cout << i;
-    //}
-    //
-    
-
-    //std::cout << a;
-    //std::cout << a.has_edge(1, 2);
-    //std::cout << std::endl;
-    //for (auto i : a.vertices())
-    //{
-    //    std::cout << i;
-    //}
-    //std::cout << a.order();
-    //std::cout << std::endl;
-    //a.init();
-    // 
-    //std::vector<int> tmp11 = { 3, 2, 1 };
-    ////std::qsort(tmp11.data(), tmp11.size(),sizeof(int),  compare);
-    //std::reverse(tmp11.begin(), tmp11.end());
-    //for (auto i : tmp11)
-    //{
-    //    std::cout << i;
-    //}
-    //MyGraph<std::string> a;
-    //a.add_vertex("test1");
-    //a.add_vertex("test2");
-    //a.add_edge("test1", "test2", 5);
-
-    ////std::cout << a;
-    //std::cout << a.has_edge("test1", "test2");
-    //std::cout << std::endl;
-    //for (auto i : a.vertices())
-    //{
-    //    std::cout << i;
-    //}
-    //std::map<int, std::map<double, bool>> test;
-    //test[1][1.1] = 0;
-    //test[1][2.2] = 1;
-    //test[2][23.12] = 0;
-    //std::map<int, int>test;
-    //test[1] = 2;
-    //std::cout << test.count(121);
-    //for (auto i = test.begin(); i != test.end(); i++)
-    //{
-    //    std::cout << i->first;
-    //    std::cout << i->second;
-    //}
-    //std::cout << test.empty();
-    //test.erase(1);
-    //test.erase(2);
-    //std::cout << test.empty();
-    
-    //if (test[1].find(13) != test[1].end())
-    //{
-    //    std::cout << test[1][1];
-    //}
-    //for (auto it1 = test.begin(); it1 != test.end(); it1++)
-    //{
-    //    //os << it->first()<<" ";
-    //    std::cout << it1->first << ": ";
-    //    for (auto it2 = it1->second.begin(); it2 != it1->second.end(); it2++)
+    //    menu11();
+    //    choice11 = EnterNumber();
+    //    MyGraph<int> graph;
+    //    switch (choice11)
     //    {
-    //        std::cout << it2->second;
+    //    case(1):
+    //    {
+    //        system("cls");
+    //        std::cout << "Enter vertex: ";
+    //        int vertex = (int)EnterNumber();
+    //        if (!graph.add_vertex(vertex))
+    //        {
+    //            std::cout << "something went wrong: vertex " << vertex << " already exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "Vertex has been added successfully" << std::endl;
+    //        }
+    //        system("pause");
+    //        break;
     //    }
-    //    std::cout << "\n";
+    //    case(2):
+    //    {
+    //        system("cls");
+    //        int vertex = (int)EnterNumber();
+    //        if (!graph.remove_vertex(vertex))
+    //        {
+    //            std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "Vertex has been erased successfully" << std::endl;
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(3):
+    //    {
+    //        system("cls");
+    //        std::cout << "enter first vertex: ";
+    //        int vertex1 = (int)EnterNumber();
+    //        std::cout << "enter second vertex: ";
+    //        int vertex2 = (int)EnterNumber();
+    //        std::cout << "enter weight of edge: ";
+    //        double weight = EnterNumber();
+    //        if (!graph.add_edge(vertex1, vertex2, weight))
+    //        {
+    //            std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " already exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "Edge has been added successfully" << std::endl;
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(4):
+    //    {
+    //        system("cls");
+    //        std::cout << "enter first vertex: ";
+    //        int vertex1 = (int)EnterNumber();
+    //        std::cout << "enter second vertex: ";
+    //        int vertex2 = (int)EnterNumber();
+    //        if (!graph.has_edge(vertex1, vertex2))
+    //        {
+    //            std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "edge " << "(" << vertex1 << ", " << vertex2 << ")" << " exists";
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(5):
+    //    {
+    //        system("cls");
+    //        std::cout << "enter first vertex: ";
+    //        int vertex1 = (int)EnterNumber();
+    //        std::cout << "enter second vertex: ";
+    //        int vertex2 = (int)EnterNumber();
+    //        std::cout << "enter weight of edge: ";
+    //        double weight = EnterNumber();
+    //        Edge<int> tmp(vertex1, vertex2, weight);
+    //        if (!graph.remove_edge(tmp))
+    //        {
+    //            std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")_" << weight << " doesn't exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "Edge has been erased successfully" << std::endl;
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(6):
+    //    {
+    //        system("cls");
+    //        std::cout << "enter first vertex: ";
+    //        int vertex1 = (int)EnterNumber();
+    //        std::cout << "enter second vertex: ";
+    //        int vertex2 = (int)EnterNumber();
+    //        if (!graph.remove_edge(vertex1, vertex2))
+    //        {
+    //            std::cout << "something went wrong: edge " << "(" << vertex1 << ", " << vertex2 << ")" << " doesn't exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "Edge has been erased successfully" << std::endl;
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(7):
+    //    {
+    //        system("cls");
+    //        std::cout << "enter first vertex: ";
+    //        int vertex1 = (int)EnterNumber();
+    //        std::cout << "enter second vertex: ";
+    //        int vertex2 = (int)EnterNumber();
+    //        std::vector<Edge<int>> tmp = graph.shortest_path(vertex1, vertex2);
+    //        if (tmp.size() == 0)
+    //        {
+    //            std::cout << "Shortest path doesn't exist" << std::endl;
+    //        }
+    //        else
+    //        {
+    //            std::cout << std::endl << "Shortest path: ";
+    //            for (auto i : tmp)
+    //            {
+    //                std::cout << i << " ";
+    //            }
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(8):
+    //    {
+    //        system("cls");
+    //        std::cout << "Enter vertex: ";
+    //        int vertex = (int)EnterNumber();
+    //        if (!graph.has_vertex(vertex))
+    //        {
+    //            std::cout << "something went wrong: vertex " << vertex << " doesn't exist";
+    //        }
+    //        else
+    //        {
+    //            std::cout << "BFS: ";
+    //            graph.walk(vertex, Print<int>);
+    //        }
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(9):
+    //    {
+    //        std::cout << graph;
+    //        system("pause");
+    //        break;
+    //    }
+    //    case(10):
+    //    {
 
+    //        std::cout << "Take care, polar bear!" << std::endl;
+    //        exit11 = true;
+    //        break;
+    //    }
+    //    default:
+    //        std::cout << "something went wrong, try again" << std::endl;
+    //        system("pause");
+    //        break;
+    //    }
     //}
-    //std::queue<int> test;
-    //test.push(1);
-    //test.push(2);
-    //test.push(3);
-    //test.push(4);
-    //test.pop();
-    //std::cout << test.front()   ;
-    //while (test.empty())
-
 
 
 
