@@ -83,6 +83,8 @@ private:
 
     vertexType getVertexWithMinDist(std::map<vertexType, bool>& unproceesedVertes, std::map<vertexType, dist_type>& distToNode)
     {
+        //for (auto iterator = distToNode.begin(); iterator != distToNode.end(); iterator++)
+        //    std::cout << iterator->first << " - "<<iterator->second;
         vertexType vertexWithMinDist;
         dist_type minDist= std::numeric_limits<dist_type>::max();
         for (auto it = unproceesedVertes.begin(); it != unproceesedVertes.end(); it++)
@@ -116,6 +118,9 @@ private:
                 }
             }
             unproceesedVertes.erase(vertex);
+            std::cout << std::endl;
+
+
         }
     }
     std::vector<Edge<vertexType, dist_type>> getShortestPath_(const vertexType& from, const vertexType& to, std::map<vertexType, dist_type>& distToNode)
@@ -288,12 +293,15 @@ public:
             unproceesedVertes[i->first] = true;
         }
         distToNode[from] = 0;
-        
+        //Print<vertexType>(from);
+        //Print<vertexType>(to);
+
         calculateDistToEachVertex(unproceesedVertes, distToNode);
         std::vector<Edge<vertexType, dist_type>> test;
         std::vector<vertexType>test1;
         if (distToNode[to] == std::numeric_limits<dist_type>::max())
             return test;
+
         test = getShortestPath_(from, to, distToNode);
 
         test1 = vertices();
@@ -324,32 +332,48 @@ public:
             int infCount = 0;
             int okCount = graph.size() / 4;
             dist_type sum = 0;
+            //std::cout << "Now is " << it1->first << std::endl;
+
             for (auto it2 = graph.begin(); it2 != graph.end(); it2++)
             {
+                //std::cout << "\tNow is " << it2->first << std::endl;
                 if (it1 == it2)
                 {
                     continue;
                 }
+                std::cout << "1" << std::endl;
                 std::vector<Edge<vertexType, dist_type>> tmp = shortest_path(it1->first, it2->first);
+                std::cout << "2" << std::endl;
+                //if (tmp.size() == 0)
+                //{
+                //    infCount++;
+                //}
+                //if (infCount >= okCount)
+                //{
+                //    arrayOfDist[it1->first] = std::numeric_limits<dist_type>::max();//kind of inf
+                //    break;
+                //}
                 if (tmp.size() == 0)
                 {
-                    infCount++;
-                }
-                if (infCount >= okCount)
-                {
                     arrayOfDist[it1->first] = std::numeric_limits<dist_type>::max();//kind of inf
+                    std::cout << "inf";
                     break;
                 }
                 for (auto i : tmp)
                 {
                     sum += i.dist;
                 }
-
+                //std::cout << sum;
             }
-            if (infCount < okCount)
+            if (arrayOfDist[it1->first] != std::numeric_limits<dist_type>::max())
             {
                 arrayOfDist[it1->first] = sum;
             }
+            //if (infCount < okCount)
+            //{
+            //    arrayOfDist[it1->first] = sum;
+            //    
+            //}
         }
         vertexType vertexWithMinDist;
         dist_type minDist = std::numeric_limits<dist_type>::max();

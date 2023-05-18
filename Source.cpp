@@ -2,27 +2,7 @@
 #include <memory>
 #include <vector>
 #include "Class.h"
-//struct Edge
-//{
-//    int id1;
-//    int id2;
-//    double dist;
-//    Edge(int id1_ = 0, int id_2 = 0, double distance_ = 0) : id1(id1_), id2(id_2), dist(distance_) {}
-//};
-//
-//void Foo(std::vector<std::shared_ptr<Edge>> &array)
-//{
-//    Edge a(1, 2, 10);
-//    std::shared_ptr<Edge> pa(&a);
-//    array.push_back(pa);
-//}
-//
-//#include<map>
-//template<typename vertexType, typename Distance = double>
-//void Print(const vertexType& val)
-//{
-//    cout << val << ' ';
-//}
+
 void exampleOfDijkstraAlgorithm()
 {
     MyGraph<std::string> a;
@@ -124,15 +104,52 @@ void menu11()
     std::cout << "10. Back menu" << std::endl;
     std::cout << "choice: ";
 }
-//void main()
+void main()
+{
+    //MyGraph<int> graph;
+    //std::cout << graph.has_vertex(1);
+    //graph.add_edge(1, 1, 1);
+    //std::cout << graph;
+     
+
+//    MyGraph<int>a;
+//    a.add_vertex(1);
+//    a.add_vertex(2);
+//    a.add_vertex(3);
+//    a.add_edge(1, 3, 4);
+//    a.add_edge(3, 1, 2);
+//    a.add_edge(1, 2, 10);
+//    for (auto i : a.shortest_path(1, 2))
 //{
-//    MyGraph<int> graph;
-//    std::cout << graph.has_vertex(1);
-//    graph.add_edge(1, 1, 1);
-//    std::cout << graph;
-//
+//    std::cout << i;
 //}
-int main() 
+    MyGraph<int>graph;
+    graph.add_vertex(1);
+    graph.add_vertex(2);
+    graph.add_vertex(3);
+    graph.add_vertex(4);
+    graph.add_vertex(5);
+    graph.add_vertex(6);
+    graph.add_edge(1, 2, 3);
+    graph.add_edge(1, 4, 8);
+    graph.add_edge(2, 1, 2);
+    graph.add_edge(2, 5, 5);
+    graph.add_edge(2, 3, 6);
+    graph.add_edge(4, 6, 7);
+    graph.add_edge(5, 4, 5);
+    graph.add_edge(5, 3, 9);
+    graph.add_edge(6, 5, 1);
+    graph.add_edge(6, 2, 7);
+ /*   for (auto i : graph.shortest_path(3, 1))
+    {
+        std::cout << i;
+    }*/
+    std::cout << "Point: " << graph.findOptimalVertex() << std::endl;
+    system("pause");
+
+
+}
+int main1() 
 {
     int choice = 0;
     bool exit = false;
@@ -553,7 +570,7 @@ int main()
                         case(2):
                         {
                             system("cls");
-                            std::cout << "Enter vertex";
+                            std::cout << "Enter vertex: ";
                             std::string vertex = " ";
                             std::cin >> vertex;
                             if (!graph.remove_vertex(vertex))
@@ -733,25 +750,48 @@ int main()
         }
         case(2):
         {
-            exampleOfDijkstraAlgorithm();
+            MyGraph<int>graph;
+            graph.add_vertex(1);
+            graph.add_vertex(2);
+            graph.add_vertex(3);
+            graph.add_vertex(4);
+            graph.add_vertex(5);
+            graph.add_vertex(6);
+            graph.add_edge(1, 2, 3);
+            graph.add_edge(1, 4, 8);
+            graph.add_edge(2, 1, 2);
+            graph.add_edge(2, 5, 5);
+            graph.add_edge(2, 3, 6);
+            graph.add_edge(4, 6, 7);
+            graph.add_edge(5, 4, 5);
+            graph.add_edge(5, 3, 9);
+            graph.add_edge(6, 5, 1);
+            graph.add_edge(6, 2, 7);
+            std::cout << "Point: " << graph.findOptimalVertex() << std::endl;
             system("pause");
             break;
         }
         case(3):
         {
             system("cls");
-            std::cout << "dfs through graph uning extra function \"Print<typedata>\"" << std::endl;
-            MyGraph<int> a;
-            a.add_vertex(1);
-            a.add_vertex(2);
-            a.add_vertex(3);
-            a.add_vertex(4);
-            a.add_edge(1, 2, 1);
-            a.add_edge(1, 3, 2);
-            a.add_edge(2, 4, 6);
-            a.add_edge(3, 4, 4);
+            MyGraph<std::string> a;
+            a.add_vertex("a");
+            a.add_vertex("b");
+            a.add_vertex("c");
+            a.add_vertex("d");
+            a.add_vertex("e");
+            a.add_vertex("f");
+            a.add_edge("a", "c", 7);
+            a.add_edge("a", "a", 7);
+            a.add_edge("a", "b", 3);
+            a.add_edge("b", "d", 8);
+            a.add_edge("b", "e", 1);
+            a.add_edge("c", "d", 5);
+            a.add_edge("e", "f", 5);
+            a.add_edge("f", "d", 1);
             std::cout << a << std::endl;
-            a.walk(1, Print<int>);
+            std::cout << "bfs through graph uning extra function \"Print<typedata>\"" << std::endl;
+            a.walk("a", Print<std::string>);
             system("pause");
             break;
         }
